@@ -1,0 +1,98 @@
+FROM lmoresi/unimelb-debian-uw:2018.1
+
+## =============================================================
+## base - image ... whatever functionality you want to provide !
+## This is the underworld dev image with some altered defaults.
+##
+## Build this from the root directory ...
+##
+## % docker build -t geodynamics-course-image -f Docker/Dockerfile
+##
+## The dockerfile builds an image from this content, and the underworld user guide
+## and serves the sample web pages and notebooks at port 8888
+##
+## % docker run -p 8181:8888 --name="docker-web-notebooks-test" -t lmoresi/lmoresi/docker-web-notebooks-module
+## and then browse the docker VM ip address on port 8181 (for example)
+##
+## OR just use kitematic and click on the preview image
+##
+## =============================================================
+
+## Grab (this) content from github
+
+## Link your content to the "docs" directory at the root level of this module
+## If you don't have any content then use the example content !!
+
+RUN pip install \
+    six --upgrade \
+    https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tarball/master \
+    jupyter_nbextensions_configurator
+
+RUN jupyter contrib nbextension install --system && \
+    jupyter nbextensions_configurator enable --system
+
+RUN pip install mkdocs mkdocs-bootswatch pymdown-extensions
+
+## Cartopy and all that stuff ... useful to have this still
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        python-gdal \
+        python-pil  \
+        python-lxml \
+        libgeos-dev \
+        gfortran \
+        cython
+
+# (proj4 is buggered up everywhere in apt-get ... so build a known-to-work version from source)
+
+RUN cd /usr/local && \
+    curl http://download.osgeo.org/proj/proj-4.9.3.tar.gz > proj-4.9.3.tar.gz  && \
+    tar -xzf proj-4.9.3.tar.gz && \
+    cd proj-4.9.3 && \
+    ./configure && \
+    make all && \
+    make install
+
+# The previous installation can only be found by cartopy if ...
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
+RUN pip install --upgrade pyproj && \
+    pip install --upgrade netcdf4
+
+RUN pip install --no-binary :all: shapely
+RUN pip install --no-binary :all: --upgrade cartopy
+RUN pip install stripy litho1pt0 obspy
+
+RUN mkdir /geodynamics && chown jovyan:jovyan /geodynamics
+WORKDIR   /geodynamics
+USER jovyan
+
+ADD --chown=jovyan:jovyan  mkdocs.yml mkdocs.yml
+ADD --chown=jovyan:jovyan  jupyter-server-theme jupyter-server-theme
+ADD --chown=jovyan:jovyan  scripts scripts
+ADD --chown=jovyan:jovyan  docs docs
+ADD --chown=jovyan:jovyan  Data/Reference Data/Reference
+ADD --chown=jovyan:jovyan  Data/Resources Data/Resources
+
+RUN ./scripts/run-sitebuilder.py
+
+RUN mkdir /geodynamics/www/external
+VOLUME    /geodynamics/www/external
+
+RUN  rsync -av $UW2_DIR/docs/examples     /geodynamics/www/Introduction/Notebooks/   && \
+     rsync -av $UW2_DIR/docs/user_guide   /geodynamics/www/Introduction/Notebooks/   && \
+     rsync -av $UW2_DIR/docs/publications /geodynamics/www/Introduction/Notebooks/
+
+RUN  ln -s /geodynamics/Data /geodynamics/www/Data
+
+ENV SHELL=/bin/bash
+
+# Launch the notebook server from the Notebook directory
+# but perhaps there is something else that would do this.
+
+EXPOSE 8080
+
+# note we use xvfb which to mimic the X display for lavavu (hope this won't clash with uw/gLucifer)
+ENTRYPOINT ["/usr/local/bin/tini", "--", "xvfbrun.sh"]
+
+CMD scripts/run-jupyter.py

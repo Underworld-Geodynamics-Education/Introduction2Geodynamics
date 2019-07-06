@@ -1,0 +1,13 @@
+.DS_Store
+_site
+.ipynb_checkpoints
+
+# Site build
+www
+
+CourseContent/Data/Resources/*
+CourseContent/Reference/Cartopy/*.png
+CourseContent/Reference/Cartopy/*.jpg
+CourseContent/Reference/Stripy/SphericalTriangulations/*.png
+CourseContent/Reference/Stripy/CartesianTriangulations/*.png
+CourseContent/Reference/Stripy/Litho1pt0/*.png
