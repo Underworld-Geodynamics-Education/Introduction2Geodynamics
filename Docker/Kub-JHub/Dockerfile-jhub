@@ -30,7 +30,8 @@ RUN jupyter-labextension enable @jupyterlab/google-drive
 RUN jupyter-serverextension enable --py jupyterlab_git
 
 ADD --chown=jovyan:jovyan  0_Intro2Geodynamics  Intro2Geodynamics
-# ADD --chown=jovyan:jovyan  Docker/Kub-JHub/install_user_files.py scripts/install_user_files.py
+ADD --chown=jovyan:jovyan  1_UserContent        1_UserContent
+ADD --chown=jovyan:jovyan  Docker/Kub-JHub/install_user_files.py scripts/install_user_files.py
 ADD --chown=jovyan:jovyan  Docker/Kub-JHub/@jupyterlab  configs/@jupyterlab
 
 # This kills the markdown (etc) editor but allows it to be reenabled from the running terminal

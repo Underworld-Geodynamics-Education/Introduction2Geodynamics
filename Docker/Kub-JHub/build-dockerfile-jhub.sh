@@ -9,4 +9,4 @@
 set -e
 cd $(dirname "$0")/../..
 
-docker build -t lmoresi/docker-cloud-geodynamics:v0.1.0 -f Docker/Kub-JHub/Dockerfile-jhub  .
+docker build -t lmoresi/docker-cloud-geodynamics:v0.1.4 -f Docker/Kub-JHub/Dockerfile-jhub  .
