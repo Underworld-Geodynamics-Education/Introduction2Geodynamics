@@ -23,7 +23,21 @@ except:
     print("Installing / updating settings failed !!")
 
 # 2 - unspecified content (generic - a unique directory name for the content would be helpful if multiple images are likely to be launched)
-Source_Path = "/user_data/1_UserContent"
-Destination_Path = "/home/jovyan"
+Source_Path = "/user_data/.UserContent/Intro2Geodynamics"
+Destination_Path = "/home/jovyan/Intro2Geodynamics"
 
 ct = _dir_util.copy_tree(Source_Path, Destination_Path, preserve_mode=1, preserve_times=1, preserve_symlinks=1, update=True, verbose=True, dry_run=0)
+
+
+## Create a symbolic link from the /home/jovyan/Intro2Geodynamics files to the working directory
+## Don't worry if it doesn't work.
+
+import os
+
+Source_Path = '/home/jovyan'
+Destination_Path = '/user_data/Intro2Geodynamics/MyFiles'
+
+try:
+    os.symlink(Source_Path, Destination_Path)
+except:
+    pass
