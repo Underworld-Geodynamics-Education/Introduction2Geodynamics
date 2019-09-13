@@ -1,9 +1,38 @@
 
 # Computational Geodynamics: Introduction
 
+\\[
+\require{color}
+\newcommand{\dGamma}{\mathbf{d}\boldsymbol{\Gamma}}
+\newcommand{\erfc}{\mbox{\rm erfc}}
+\newcommand{\Red}[1]{\textcolor[rgb]{0.7,0.0,0.0}{#1}}
+\newcommand{\Green}[1]{\textcolor[rgb]{0.0,0.7,0.0}{ #1}}
+\newcommand{\Blue}[1]{\textcolor[rgb]{0.0,0.0,0.7}{ #1}}
+\newcommand{\Emerald}[1]{\textcolor[rgb]{0.0,0.7,0.3}{ #1}}
+\\]
+
+
+\begin{equation}
+\frac{d}{dt} \int _ {\Omega} \rho \phi d\Omega =
+	- \int _ {\Gamma} \mathbf{F} \cdot \dGamma
+	+ \int _ {\Omega} \rho H d\Omega
+	- \int _ {\Gamma} \rho \phi \mathbf{v} \cdot \dGamma
+	\label{eq:1}
+	\tag{Equation}
+\end{equation}
+
+<div class="alert alert-block alert-danger">
+<b>Just don't:</b> In general, avoid the red boxes. These should only be
+used for actions that might cause data loss or another major issue.
+</div>
+
+![NN]
+
+[NN]: ../Diagrams/MundusSubterraneus.png
+
 <!-- TOC / Menu -->
 
-![](../Diagrams/MundusSubterraneus.png)
+<img src="../Diagrams/MundusSubterraneus.png" width=50%>
 
 *Athanasius Kircher, Mundus subterraneus (1664/65): Systema Ideale PYROPHYLACIORUM Subterraneorum, quorum montes <i> Vulcanii, veluti spiracula quaedam existant*
 
